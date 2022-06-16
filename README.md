@@ -32,3 +32,7 @@ to emulate:
 ## The Plan (for now)
 - [ ] Research definitions of functions allowed
 - [ ] Research pipe usage (aka how to use a pipe)
+
+## Pipes
+1. Returns 0 on success, read is fd[0] and write is fd[1]. Closing pipes will send EOF after pipe content is read
+2. Can be used in conjunction with dup to link write fd to stdin and read fd to stdout
