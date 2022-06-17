@@ -36,3 +36,11 @@ to emulate:
 ## Pipes
 1. Returns 0 on success, read is fd[0] and write is fd[1]. Closing pipes will send EOF after pipe content is read
 2. Can be used in conjunction with dup to link write fd to stdin and read fd to stdout
+
+## Input & Output Redirection
+1. Output redirection - eg. ls -l > outfile
+2. Output redirection (append) - eg. echo Hello >> outfile
+3. Input redirection - eg. wc -l < infile or < infile wc -l {rationalize this please!} original is wc -l infile 
+4. Pipe is used to pass output to another program or utility. |
+5. Redirect is used to pass output to either a file or stream. >
+6. 
