@@ -30,17 +30,24 @@ to emulate:
 | exit     | void exit(int status) | terminates the calling process "immediately" |
 
 ## The Plan (for now)
-- [ ] Research definitions of functions allowed
-- [ ] Research pipe usage (aka how to use a pipe)
+- [x] Research definitions of functions allowed
+- [x] Research pipe usage (aka how to use a pipe)
+- [x] Child process, send string through pipe, wait
+- [ ] Link stdin, stdout to pipe
+- [ ] Link command input/output to pipe
+- [ ] How to bring in env variables into child processes
 
 ## Pipes
-1. Returns 0 on success, read is fd[0] and write is fd[1]. Closing pipes will send EOF after pipe content is read
-2. Can be used in conjunction with dup to link write fd to stdin and read fd to stdout
+1. Returns 0 on success, read is fd[0] and write is fd[1]. Closing pipes will send EOF after pipe content is read (not proven)
+2. Can be used in conjunction with dup to link write fd to stdin and read fd to stdout (not successful yet)
+3. 
 
 ## Input & Output Redirection
 1. Output redirection - eg. ls -l > outfile
 2. Output redirection (append) - eg. echo Hello >> outfile
-3. Input redirection - eg. wc -l < infile or < infile wc -l {rationalize this please!} original is wc -l infile 
+3. Input redirection - eg. wc -l < infile or < infile wc -l
 4. Pipe is used to pass output to another program or utility. |
-5. Redirect is used to pass output to either a file or stream. >
-6. 
+5. Redirect is used to pass output to either a file or stream. > (To research more)
+
+## env variables
+1. Bringing in variables, parsing to isolate paths
