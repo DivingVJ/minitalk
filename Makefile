@@ -1,5 +1,5 @@
 # What is the function of this? 
-NAME = pipex.a
+NAME = pipex
 CC = gcc
 CFLAG = -Wall -Wextra -Werror
 
@@ -9,16 +9,13 @@ OBJ = $(patsubst %.c, %.o, $(SRC))
 
 LIBFT = libft/libft.a
 LIBFT_PATH = libft/
-LIBFTOBJ = libft/ft_put*.o libft/ft_strlen.o
+LIBFTSRC = libft/ft_strlen.c
 
 all: $(NAME) 
 
 
 $(NAME): $(OBJ) $(LIBFT)
-	ar rcs $(NAME) $(OBJ) $(LIBFTOBJ)
-
-$(OBJ): $(SRC) $(DEP)
-	$(CC) $(CFLAG) -c $(SRC)
+	$(CC) $(CFLAG) -o $(NAME) $(OBJ) $(LIBFTSRC)
 
 $(LIBFT) :
 	@make -C $(LIBFT_PATH)
