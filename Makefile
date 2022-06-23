@@ -9,7 +9,7 @@ OBJ = $(patsubst %.c, %.o, $(SRC))
 
 LIBFT = libft/libft.a
 LIBFT_PATH = libft/
-LIBFTSRC = libft/ft_strlen.c
+LIBFTSRC = libft/*.c
 
 all: $(NAME) 
 
