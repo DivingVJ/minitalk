@@ -32,7 +32,7 @@ char *get_cmd_path(char *cmd, char **patharray)
 		temp2 = ft_strjoin(temp1, cmd);
 		if (access(temp2, X_OK) == 0)
 		{
-			printf("%s\n", temp2);
+			printf(" Pathsend %s\n", temp2);
 			return (temp2);
 		}
 		patharray++;
@@ -78,13 +78,13 @@ void exec_cmd(char *args, char *envp, char **patharray)
 		char *pathcmd;
 		char **splitcmd;
 		char *argk[] = {"cat", NULL};
-		printf("child");
+		printf("child\n");
 //		dup2(fd[1], STDOUT_FILENO);
 		close(fd[1]);
 		close(fd[0]);
 	//	splitcmd = split_cmd(argv[2]);
 		pathcmd = get_cmd_path(argv[2], patharray);
-		printf("Path %s\n", pathcmd);
+		printf("Pathrecvd %s\n", pathcmd);
 		if (!pathcmd) 
 		{ 
 			printf("Command not found : %s\n", argv[2]);
@@ -121,9 +121,11 @@ int main(int argc, char **argv, char **envp)
 		return 1;
 	}
 	patharray = extract_path(envp);
-	for(k = 0; **patharray != '\0'; k++)
-		printf("%s\n", patharray[k]);
-
+	// while (*patharray != 0)
+	// {
+	// 	printf("%s\n", *patharray);
+	// 	patharray++;
+	// }
 
 	exec_cmd(*argv, *envp, patharray);
 
