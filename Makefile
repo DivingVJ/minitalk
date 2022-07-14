@@ -1,6 +1,6 @@
 NAME = pipex
 CC = gcc
-CFLAG = -Wall -Wextra -Werror
+CFLAG = -Wall -Wextra -Werror 
 
 SRC =	pipex.c check_file.c
 

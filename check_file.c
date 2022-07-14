@@ -1,6 +1,19 @@
 #include "pipex.h"
 #include "libft/libft.h"
 
+void	free_strarray(char **array)
+{
+	int	i;
+
+	i = 0;
+	while (array[i] != NULL)
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
+}
+
 char	**extract_path(char **envp)
 {
 	char	*ptrPath;

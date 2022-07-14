@@ -90,5 +90,6 @@ int	main(int argc, char **argv, char **envp)
 	}
 	path_array = extract_path(envp);
 	exec_cmd(argv, envp, path_array);
+	free_strarray(path_array);
 	return (0);
 }
