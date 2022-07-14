@@ -1,15 +1,18 @@
-# What is the function of this? 
 NAME = pipex
 CC = gcc
 CFLAG = -Wall -Wextra -Werror
 
-SRC =	pipex.c
+SRC =	pipex.c check_file.c
 
 OBJ = $(patsubst %.c, %.o, $(SRC))
 
-LIBFT = libft/libft.a
-LIBFT_PATH = libft/
-LIBFTSRC = libft/*.c
+LIBFT = 		libft/libft.a
+LIBFT_PATH = 	libft/
+LIBFTSRC =		libft/ft_printf.c libft/ft_strnstr.c \
+				libft/ft_split.c libft/ft_strjoin.c	\
+				libft/ft_put*.c libft/ft_strlen.c \
+				libft/ft_strncmp.c libft/ft_substr.c \
+				libft/ft_strlcat.c
 
 all: $(NAME) 
 

@@ -1,138 +1,94 @@
 #include "pipex.h"
 #include "libft/libft.h"
 
-char **extract_path(char **envp)
+void	fd_dup(int fd1, int fd2)
 {
-	int	i;
-	char *ptrPath;
-	char **paths;
-
-	i = 0;
-	while (*envp != NULL)
-	{
-       	ptrPath = ft_strnstr(*envp, "PATH=", 5);
-      	if (ptrPath) 
-		{
-			paths = ft_split(ptrPath+5, ':');
-			return (paths);
-		}	
-       	envp++;
-  	}
-	return (NULL);
+	if (dup2(fd1, fd2) < 0)
+		perror("Dup2 failed");
+	close(fd1);
+	return ;
 }
 
-char *get_cmd_path(char *cmd, char **patharray)
+void	child_in(int pfd[], char **argv, char **envp, char **p_array)
 {
-	char *temp1, *temp2;
-	int test;
+	pid_t	pid;
+	char	**cmd_path;
+	int		fd_input;
 
-	while (*patharray)
-	{
-		temp1 = ft_strjoin(*patharray, "/");
-		temp2 = ft_strjoin(temp1, cmd);
-		if (access(temp2, X_OK) == 0)
-		{
-			printf(" Pathsend %s\n", temp2);
-			return (temp2);
-		}
-		patharray++;
-	}
-	return (NULL);
-}
-
-int	check_file(char *name)
-{
-	if (access(name, R_OK | W_OK))
-		return (0);
-	return (1);	
-}
-
-char **split_cmd(char *cmd)
-{
-	char **retval;
-	char *temp;
-	int		len;
-
-	if(cmd[0] == '\"')
-	{
-		len = ft_strlen(cmd);
-		temp = ft_substr(cmd, 1, len - 2);
-	}
-		retval = ft_split(temp, ' ');
-	return (retval);
-}
-
-void exec_cmd(char *args, char *envp, char **patharray)
-{
-	int	fd[2];
-	int pid;
-
-	if (pipe(fd) < 0) 
-		return ;
+	fd_input = check_file(argv[1], 0);
 	pid = fork();
-	if (pid < 0) { return ;}
+	if (pid < 0)
+	{
+		perror("Fork failed");
+		return ;
+	}
 	else if (pid == 0)
-	{	//child
-		char **argv;
-		char **envp;
-		char *pathcmd;
-		char **splitcmd;
-		char *argk[] = {"cat", NULL};
-		printf("child\n");
-//		dup2(fd[1], STDOUT_FILENO);
-		close(fd[1]);
-		close(fd[0]);
-	//	splitcmd = split_cmd(argv[2]);
-		pathcmd = get_cmd_path(argv[2], patharray);
-		printf("Pathrecvd %s\n", pathcmd);
-		if (!pathcmd) 
-		{ 
-			printf("Command not found : %s\n", argv[2]);
-			return ;
-		}
-		execve(pathcmd, argk, envp);
-		
+	{
+		cmd_path = get_cmd_path(argv, 2, p_array);
+		close(pfd[0]);
+		fd_dup(fd_input, STDIN_FILENO);
+		fd_dup(pfd[1], STDOUT_FILENO);
+		execve(cmd_path[0], cmd_path, envp);
+		ft_printf("Execve1 failed!\n");
 	}
 	else
-	{	// parent
-		printf("parent\n");
+		waitpid(-1, NULL, 0);
+}
+
+void	child_out(int pfd[], char **argv, char **envp, char **p_array)
+{	
+	pid_t	pid;
+	char	**cmd_path;	
+	int		fd_output;
+
+	fd_output = check_file(argv[4], 1);
+	pid = fork();
+	if (pid < 0)
+	{
+		perror("Fork failed");
+		return ;
+	}
+	else if (pid == 0)
+	{
+		cmd_path = get_cmd_path(argv, 3, p_array);
+		close(pfd[1]);
+		fd_dup(pfd[0], STDIN_FILENO);
+		fd_dup(fd_output, STDOUT_FILENO);
+		execve(cmd_path[0], cmd_path, envp);
+		ft_printf("Execve2 failed!\n");
+	}
+	else
+	{
+		close(pfd[1]);
+		waitpid(-1, NULL, 0);
 	}
 }
 
-
-int main(int argc, char **argv, char **envp)
+void	exec_cmd( char **argv, char **envp, char **p_array)
 {
-    int len, i,k, pid, test;
-	int	fd[2];
-	char *ptrPath;
-	char *cmd;
-	char *filename;
-	char **patharray;
+	int		pfd[2];
+	pid_t	pid;
+	char	**cmd_path;
 
-	i = 0;
-    if (argc != 3)
-    {
-        printf("Need 2 arg\n");
-        return (-1);
-    }
-	if (!check_file(argv[1]))
+	if (pipe(pfd) < 0)
 	{
-		printf("No such file or directory : %s\n", argv[1]);
-		return 1;
+		perror("Pipe Failed");
+		return ;
 	}
-	patharray = extract_path(envp);
-	// while (*patharray != 0)
-	// {
-	// 	printf("%s\n", *patharray);
-	// 	patharray++;
-	// }
+	child_in(pfd, argv, envp, p_array);
+	child_out(pfd, argv, envp, p_array);
+}
 
-	exec_cmd(*argv, *envp, patharray);
+int	main(int argc, char **argv, char **envp)
+{
+	char	**path_array;
 
-
-
-	
-    len = ft_strlen(argv[1]);
-    printf("Argv = %s : %d\n", argv[1], len);
-    return (0);
+	if (argc != 5)
+	{
+		ft_printf("Need 4 arguments: <infile> <cmd1> <cmd2> <outfile>\n");
+		return (1);
+	}
+	path_array = extract_path(envp);
+	exec_cmd(argv, envp, path_array);
+	return (0);
 }
