@@ -4,21 +4,23 @@ CFLAG = -Wall -Wextra -Werror
 
 SRC =	pipex.c check_file.c
 
-OBJ = $(patsubst %.c, %.o, $(SRC))
+BONUS_SRC = pipex_bonus.c check_file_bonus.c
+
+DEP = pipex.h
+
+DEP_BONUS = pipex_bonus.h
 
 LIBFT = 		libft/libft.a
 LIBFT_PATH = 	libft/
-LIBFTSRC =		libft/ft_printf.c libft/ft_strnstr.c \
-				libft/ft_split.c libft/ft_strjoin.c	\
-				libft/ft_put*.c libft/ft_strlen.c \
-				libft/ft_strncmp.c libft/ft_substr.c \
-				libft/ft_strlcat.c
 
 all: $(NAME) 
 
 
-$(NAME): $(OBJ) $(LIBFT)
-	$(CC) $(CFLAG) -o $(NAME) $(OBJ) $(LIBFTSRC)
+$(NAME): $(SRC) $(DEP) $(LIBFT)
+	$(CC) $(CFLAG) -o $(NAME) $(SRC) $(LIBFT)
+
+bonus: $(BONUS_SRC) $(DEP_BONUS) $(LIBFT)
+	$(CC) $(CFLAG) -o $(NAME) $(BONUS_SRC) $(LIBFT)	
 
 $(LIBFT) :
 	@make -C $(LIBFT_PATH)
@@ -27,7 +29,7 @@ clean:
 	rm -f $(OBJ)
 	@make clean -C $(LIBFT_PATH)
 
-fclean: clean	
+fclean: 
 	rm -f $(NAME)
 	@make fclean -C $(LIBFT_PATH)
 

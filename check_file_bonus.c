@@ -1,4 +1,4 @@
-#include "pipex.h"
+#include "pipex_bonus.h"
 #include "libft/libft.h"
 
 void	fd_dup(int fd1, int fd2)
@@ -40,13 +40,15 @@ char	**extract_path(char **envp)
 	return (NULL);
 }
 
-char	**get_cmd_path(char **argv, int arg, char **path_array)
+char	**get_cmd_path(char **argv, char **envp, int arg)
 {
 	char	**cmd_path;
 	char	**cmd_arg;
 	char	*test_path;
 	char	*temp;
+	char	**path_array;
 
+	path_array = extract_path(envp);
 	temp = ft_strjoin("/", argv[arg]);
 	cmd_arg = ft_split(temp, ' ');
 	while (*path_array)
@@ -56,6 +58,7 @@ char	**get_cmd_path(char **argv, int arg, char **path_array)
 		{
 			temp = ft_strjoin(*path_array, temp);
 			cmd_path = ft_split(temp, ' ');
+			// free_strarray(path_array);
 			return (cmd_path);
 		}
 		path_array++;
@@ -78,7 +81,7 @@ int	check_file(char *fname, int type)
 		if (access(fname, F_OK) == 0)
 		{
 			if (access(fname, W_OK) == 0)
-				return (open(fname, O_WRONLY | O_TRUNC));
+				return (open(fname, O_WRONLY | O_APPEND));
 			else
 				perror(fname);
 		}

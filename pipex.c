@@ -1,14 +1,6 @@
 #include "pipex.h"
 #include "libft/libft.h"
 
-void	fd_dup(int fd1, int fd2)
-{
-	if (dup2(fd1, fd2) < 0)
-		perror("Dup2 failed");
-	close(fd1);
-	return ;
-}
-
 void	child_in(int pfd[], char **argv, char **envp, char **p_array)
 {
 	pid_t	pid;
@@ -67,8 +59,6 @@ void	child_out(int pfd[], char **argv, char **envp, char **p_array)
 void	exec_cmd( char **argv, char **envp, char **p_array)
 {
 	int		pfd[2];
-	pid_t	pid;
-	char	**cmd_path;
 
 	if (pipe(pfd) < 0)
 	{
